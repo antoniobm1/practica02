@@ -6,66 +6,66 @@ Script a utilizar para instalar:
 
 #!/bin/bash
 set -x
-#Actualizamos los repositorios
+# Actualizamos los repositorios
 apt-get update
 
-#Instalamos apache
+# Instalamos apache
 apt-get install apache2 -y
 
-#Instalamos paquetes para apache
+# Instalamos paquetes para apache
 apt-get install php libapache2-mod-php php-mysql -y
 
-#Instalamos adminer
+# Instalamos adminer
 cd /var/www/html
 mkdir adminer
 cd adminer
 wget https://github.com/vrana/adminer/releases/download/v4.3.1/adminer-4.3.1-mysql.php 
 mv adminer-4.3.1-mysql.php index.php
 
-#Instalamos git
+# Instalamos git
 apt-get install git -y
 
-#Instalamos la aplicación web
+# Instalamos la aplicación web
 cd /var/www/html
 git clone https://github.com/josejuansanchez/iaw-practica-lamp.git 
 chown www-data:www-data * -R
 
-#Configuramos la red
+# Configuramos la red
 cd /var/www/html/iaw-practica-lamp/src
 sed -i 's/localhost/100.24.39.108/' config.php
 
-#En nuestra maquina de amazon cd /home/ubuntu/ 
-#nano lamp.sh y pegamos nuestro script
-#sudo chmod +x lamp.sh
-#sudo ./lamp.sh
+# En nuestra maquina de amazon cd /home/ubuntu/ 
+# nano lamp.sh y pegamos nuestro script
+# sudo chmod +x lamp.sh
+# sudo ./lamp.sh
 
 
-#instalamos las debconf-utils
-sudo apt-get install debconf-utils -y
+# instalamos las debconf-utils
+apt-get install debconf-utils -y
 
-#Configuramos la contraseña del root para Mysql
+#C onfiguramos la contraseña del root para Mysql
 DB_ROOT_PASSWD=root
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASSWD"
-sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DB_ROOT_PASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DB_ROOT_PASSWD"
 
-#Instalamos MYSQL Server
-sudo apt-get install mysql-server -y
+# Instalamos MYSQL Server
+apt-get install mysql-server -y
 
-#Comprobamos que tiene bien la pass de Mysql con: mysql -u root -p
-
-
+# Comprobamos que tiene bien la pass de Mysql con: mysql -u root -p
 
 
 
 
-#Configuramos la base de datos de la aplicación web
-sudo DB_NAME=lamp_db
-sudo DB_USER=lamp_user
-sudo DB_PASSWD=lamp_user
-sudo mysql -u root -p$DB_ROOT_PASSWD <<< "DROP DATABASE IF EXISTS $DB_NAME;"
-sudo mysql -u root -p$DB_ROOT_PASSWD <<< "CREATE DATABASE $DB_NAME;"
-sudo mysql -u root -p$DB_ROOT_PASSWD <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD';"
-sudo mysql -u root -p$DB_ROOT_PASSWD <<< "FLUSH PRIVILEGES;"
 
-#Importamos la base de datos
-sudo mysql -u root -p$DB_ROOT_PASSWD < /var/www/html/iaw-practica-lamp/db/database.sql
+
+# Configuramos la base de datos de la aplicación web
+DB_NAME=lamp_db
+DB_USER=lamp_user
+DB_PASSWD=lamp_user
+mysql -u root -p$DB_ROOT_PASSWD <<< "DROP DATABASE IF EXISTS $DB_NAME;"
+mysql -u root -p$DB_ROOT_PASSWD <<< "CREATE DATABASE $DB_NAME;"
+mysql -u root -p$DB_ROOT_PASSWD <<< "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER@'%' IDENTIFIED BY '$DB_PASSWD';"
+mysql -u root -p$DB_ROOT_PASSWD <<< "FLUSH PRIVILEGES;"
+
+# Importamos la base de datos
+mysql -u root -p$DB_ROOT_PASSWD < /var/www/html/iaw-practica-lamp/db/database.sql
